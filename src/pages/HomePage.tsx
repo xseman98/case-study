@@ -2,10 +2,10 @@ import React from 'react'
 
 const HomePage: React.FC = () => {
   return (
-    <div className="bg-gray-100 p-4">
-      <h1 className="text-3xl font-bold text-center">Hello, Tailwind CSS!</h1>
+    <div className="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-bold text-center">Hello there!</h1>
       <p className="text-center text-gray-700 mt-2">
-        This is a Tailwind CSS example in a React app.
+        This is a Case Study project for open position.
       </p>
     </div>
   )
