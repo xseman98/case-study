@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import useFetchData from '../hooks/useFetchData'
 import { useAuth } from './AuthContext'
 import AppLoader from '../components/AppLoader'
 import ErrorComponent from '../components/ErrorComponent'
+import { z } from 'zod'
+import useFetchData from '../hooks/useFetchData'
 
 interface Post {
   userId: number
@@ -10,6 +11,15 @@ interface Post {
   title: string
   body: string
 }
+
+const PostSchema = z.object({
+  userId: z.number(),
+  id: z.number(),
+  title: z.string(),
+  body: z.string(),
+})
+
+const PostsArraySchema = z.array(PostSchema)
 
 interface PostsContextType {
   posts: Post[] | null
@@ -42,8 +52,15 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
   } = useFetchData<Post[]>(`${apiUrl}/posts`)
 
   useEffect(() => {
-    setPosts(fetchedPosts)
-    setFilteredPosts(fetchedPosts)
+    try {
+      const validatedPosts = fetchedPosts
+        ? PostsArraySchema.parse(fetchedPosts)
+        : null
+      setPosts(validatedPosts)
+      setFilteredPosts(validatedPosts)
+    } catch (err) {
+      console.error('Error validating posts:', err)
+    }
   }, [fetchedPosts])
 
   const deletePost = (postId: number) => {
