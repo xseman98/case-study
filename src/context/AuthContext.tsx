@@ -10,8 +10,8 @@ interface AuthContextType {
   user: User | null
   signIn: (id: number, name: string, callback?: () => void) => void
   signOut: (callback?: () => void) => void
-  increment: () => void
-  decrement: () => void
+  increment: (callback?: () => void) => void
+  decrement: (callback?: () => void) => void
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -45,15 +45,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (callback) callback()
   }
 
-  const increment = () => {
+  const increment = (callback?: () => void) => {
     if (!user) return
     setUser({ id: user.id + 1, name: user.name })
+    if (callback) callback()
   }
 
-  const decrement = () => {
+  const decrement = (callback?: () => void) => {
     if (!user) return
     if (user.id === 1) return
     setUser({ id: user.id - 1, name: user.name })
+    if (callback) callback()
   }
 
   return (

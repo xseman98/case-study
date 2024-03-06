@@ -31,12 +31,16 @@ const AppNavbar: React.FC = () => {
 
   const handleIncrementClick = () => {
     setShowPopup(false)
-    increment()
+    increment(() => {
+      navigate('/posts/all')
+    })
   }
 
   const handleDecrementClick = () => {
     setShowPopup(false)
-    decrement()
+    decrement(() => {
+      navigate('/posts/all')
+    })
   }
 
   const handleLogoutClick = () => {
