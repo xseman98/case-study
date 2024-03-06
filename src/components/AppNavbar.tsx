@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const AppNavbar: React.FC = () => {
-  const { isAuthenticated, user, signOut, increment } = useAuth()
+  const { isAuthenticated, user, signOut, increment, decrement } = useAuth()
   const navigate = useNavigate()
   const [showPopup, setShowPopup] = useState(false)
   const popupRef = useRef<HTMLDivElement>(null)
@@ -30,9 +30,13 @@ const AppNavbar: React.FC = () => {
   }
 
   const handleIncrementClick = () => {
-    // Implement increment logic
     setShowPopup(false)
     increment()
+  }
+
+  const handleDecrementClick = () => {
+    setShowPopup(false)
+    decrement()
   }
 
   const handleLogoutClick = () => {
@@ -98,6 +102,12 @@ const AppNavbar: React.FC = () => {
                     onClick={handleIncrementClick}
                   >
                     Increment
+                  </button>
+                  <button
+                    className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                    onClick={handleDecrementClick}
+                  >
+                    Decrement
                   </button>
                   <button
                     className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"

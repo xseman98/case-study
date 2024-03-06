@@ -11,6 +11,7 @@ interface AuthContextType {
   signIn: (id: number, name: string, callback?: () => void) => void
   signOut: (callback?: () => void) => void
   increment: () => void
+  decrement: () => void
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextType>({
   signIn: () => {},
   signOut: () => {},
   increment: () => {},
+  decrement: () => {},
 })
 
 export const useAuth = () => useContext(AuthContext)
@@ -32,16 +34,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
 
   const signIn = (id: number, name: string, callback?: () => void) => {
-    // Perform sign-in logic here
-    // For demonstration purposes, we'll just log to console and set isAuthenticated to true
     setIsAuthenticated(true)
     setUser({ id, name })
     if (callback) callback()
   }
 
   const signOut = (callback?: () => void) => {
-    // Perform sign-out logic here
-    // For demonstration purposes, we'll just log to console and set isAuthenticated to false
     setIsAuthenticated(false)
     setUser(null)
     if (callback) callback()
@@ -52,9 +50,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser({ id: user.id + 1, name: user.name })
   }
 
+  const decrement = () => {
+    if (!user) return
+    if (user.id === 1) return
+    setUser({ id: user.id - 1, name: user.name })
+  }
+
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, signIn, signOut, increment }}
+      value={{ isAuthenticated, user, signIn, signOut, increment, decrement }}
     >
       {children}
     </AuthContext.Provider>
