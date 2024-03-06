@@ -1,38 +1,51 @@
-import React from 'react'
-import useFetchData from '../hooks/useFetchData'
-
-interface Post {
-  userId: number
-  id: number
-  title: string
-  body: string
-}
+import React, { useEffect } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { usePosts } from '../context/PostsContext'
 
 const PostsPage: React.FC = () => {
-  const apiUrl = process.env.REACT_APP_API_URL || ''
-  const {
-    data: posts,
-    loading,
-    error,
-  } = useFetchData<Post[]>(`${apiUrl}/posts`)
+  const { filter } = useParams()
+  const { posts, deletePost, filterPosts } = usePosts()
+  const { user } = useAuth()
 
-  if (loading) {
-    return <div>Loading...</div>
-  }
+  useEffect(() => {
+    filterPosts(filter)
+  }, [filter])
 
-  if (error) {
-    return <div>Error: {(error as Error).message}</div>
+  const handleDelete = (postId: number) => {
+    deletePost(postId)
   }
 
   return (
-    <div>
-      <h1>List of Posts</h1>
-      <ul>
+    <div className="flex flex-col min-h-screen pb-12">
+      <h1 className="text-3xl font-bold mb-6 p-4 text-center">
+        List of {filter} posts
+      </h1>
+      <p className="text-gray-600 mb-6 text-center">
+        {posts?.length || 0} post/s
+      </p>
+      <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {posts &&
           posts.map((post) => (
-            <li key={post.id}>
-              <h2>{post.title}</h2>
-              <p>{post.body}</p>
+            <li
+              key={post.id}
+              className="bg-white rounded-lg shadow-md p-6 relative"
+            >
+              <Link
+                to={`/post/${post.id}`}
+                className="text-xl font-semibold mb-4"
+              >
+                {post.title}
+              </Link>
+              <p className="text-gray-700">{post.body}</p>
+              {user && post.userId === user.id && (
+                <button
+                  className="absolute bottom-2 right-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                  onClick={() => handleDelete(post.id)}
+                >
+                  Delete
+                </button>
+              )}
             </li>
           ))}
       </ul>
